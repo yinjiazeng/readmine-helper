@@ -2,8 +2,9 @@
   "name": "readmine助手",
   "description" : "readmine助手",
   "version": "1.0",
+  "options_page": "options.html",
   "browser_action": {
-    "default_icon": "images/icon16.png"
+    "default_icon": "images/icon.png"
   },
   "permissions": [
     "*://*/*"
