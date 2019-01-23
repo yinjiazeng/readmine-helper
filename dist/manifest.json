@@ -6,12 +6,10 @@
   "browser_action": {
     "default_icon": "images/icon.png"
   },
-  "permissions": [
-    "*://*/*"
-  ],
   "content_scripts": [{
-    "matches": ["*://*/*"],
-    "js": ["script/jquery.js", "script/content.js"]
+    "matches": ["http://192.168.200.55:90/*"],
+    "js": ["script/jquery.js", "script/content.js"],
+    "css": ["style/content.css"]
   }],
   "manifest_version": 2
 }

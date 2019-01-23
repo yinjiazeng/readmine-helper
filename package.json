@@ -12,7 +12,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",
     "js-base64": "^2.5.0",
-    "nuijs": "^0.4.2",
+    "nuijs": "^0.4.3",
     "qs": "^6.6.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
