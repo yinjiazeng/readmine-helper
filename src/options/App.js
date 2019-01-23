@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Input, Form, Checkbox, Switch, Button, message} from 'antd';
+import {Input, Form, Checkbox, Switch, Button, message, Popover, Icon} from 'antd';
 import data from './data';
 
 const formItemLayout = {
@@ -45,12 +45,12 @@ class App extends Component {
                 <Form onSubmit={this.handleSubmit} style={{width:480}}>
                     <Form.Item
                         {...formItemLayout}
-                        label="域名"
+                        label="网址"
                         >
-                        {getFieldDecorator('domain', {
-                            initialValue:state.domain
+                        {getFieldDecorator('url', {
+                            initialValue:state.url
                         })(
-                            <Input />
+                            <Input autoComplete="off" placeholder="http://readmine网址" />
                         )}
                     </Form.Item>
                     <Form.Item
@@ -60,7 +60,7 @@ class App extends Component {
                         {getFieldDecorator('username', {
                             initialValue:state.username
                         })(
-                            <Input />
+                            <Input autoComplete="off" />
                         )}
                     </Form.Item>
                     <Form.Item
@@ -70,16 +70,32 @@ class App extends Component {
                         {getFieldDecorator('password', {
                             initialValue:state.password
                         })(
-                            <Input />
+                            <Input autoComplete="off" />
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
+                        label="打开页面"
+                        >
+                        {getFieldDecorator('path', {
+                            initialValue:state.path || '/my/page'
+                        })(
+                            <Input autoComplete="off" />
                         )}
                     </Form.Item>
                     <Form.Item
                         {...formItemLayout}
                         label="自动跟踪"
                         >
-                        {getFieldDecorator('tracks', { valuePropName: 'checked' })(
+                        {getFieldDecorator('tracks', {
+                            initialValue:state.tracks,
+                            valuePropName:'checked'
+                        })(
                             <Switch />
                         )}
+                        <Popover placement="bottomRight" content="触发条件为状态设置为Started或Resolved" arrowPointAtCenter>
+                            <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
+                        </Popover>
                     </Form.Item>
                     <Form.Item
                         {...formItemLayout}

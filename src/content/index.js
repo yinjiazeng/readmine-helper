@@ -3,6 +3,8 @@ import 'nuijs/components/search';
 import {events} from 'nuijs/core';
 import pinyin from './pinyin';
 
+const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
 let settings = {};
 
 chrome.extension.onMessage.addListener(request => {
@@ -18,13 +20,19 @@ events({
         'mouseover select':'search',
         'focus select':'search focus',
         'keydown .search-wrap input':'keydown',
-        'change #issue_status_id':'statusChange'
+        'change #issue_status_id':'statusChange',
+        'mousedown .contextual .icon-edit':'showDetail'
     },
     callbacks:{
         project_quick_jump_box(data){
             if(data.value){
                 window.location = data.value;
             }
+        }
+    },
+    showDetail(){
+        if($('#update').is(':hidden')){
+            $('#issue_assigned_to_id').val($('.author > .user').attr('href').replace('/users/', ''))
         }
     },
     getCallback(id){
@@ -44,8 +52,25 @@ events({
         (settings.beautify || []).find(v => v === id)
     },
     statusChange(e, $elem){
-        if($elem.val() == 3){
+        const value = $elem.val();
+        if(value == 3){
             $('#issue_done_ratio').val(100);
+        }
+        let $off;
+        if(
+            (value == 3 || value == 2) && 
+            settings.tracks && 
+            ($off = $('.icon-fav-off')).length &&
+            $('.assigned-to > .user').attr('href') === $('#loggedas > .user').attr('href')
+        ){
+            $off.removeClass('icon-fav-off').addClass('icon-fav').text('取消跟踪').attr('data-method', 'delete');
+            $.ajax({
+                type:'post',
+                url:$off.attr('href'),
+                headers:{
+                    'X-CSRF-Token':csrfToken
+                }
+            })
         }
     },
     keydown(e){
