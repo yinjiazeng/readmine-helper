@@ -3,6 +3,16 @@ import 'nuijs/components/search';
 import {events} from 'nuijs/core';
 import pinyin from './pinyin';
 
+let settings = {};
+
+chrome.extension.onMessage.addListener(request => {
+    settings = request
+})
+
+chrome.extension.sendMessage('init', (response) => {
+    settings = response
+})
+
 events({
     events:{
         'mouseover select':'search',
@@ -24,13 +34,14 @@ events({
             }
         }
     },
-    checkEnable(id){
+    checkEnabled(id){
         return [
             'issue_assigned_', 
             'values_assigned_', 
             'values_author_', 
             'values_watcher_',
-        ].find(v => id.indexOf(v) === 0) || [].includes(id)
+        ].find(v => id.indexOf(v) === 0) || 
+        (settings.beautify || []).find(v => v === id)
     },
     statusChange(e, $elem){
         if($elem.val() == 3){
@@ -47,7 +58,7 @@ events({
     },
     search(e, $elem){
         const id = $elem.attr('id');
-        if(!e.target.bind_search && this.checkEnable(id)){
+        if(!e.target.bind_search && this.checkEnabled(id)){
             e.target.bind_search = true;
             const callback = this.getCallback(id);
             const data = this.getData($elem);

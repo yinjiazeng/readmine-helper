@@ -6,8 +6,11 @@
   "browser_action": {
     "default_icon": "images/icon.png"
   },
+  "background": {
+    "scripts": ["script/background.js"]
+  },
   "content_scripts": [{
-    "matches": ["http://192.168.200.55:90/*"],
+    "matches": ["http://192.168.200.55:90/*", "http://kf.zjaisino.com:90/*"],
     "js": ["script/jquery.js", "script/content.js"],
     "css": ["style/content.css"]
   }],
