@@ -118,7 +118,7 @@ module.exports = webpackMerge(config, {
               options:{
                 name:'[name].[hash:7].[ext]',
                 publicPath:'./font/',
-                outputPath:'static/font/'
+                outputPath:'font/'
               }
             }
           ]
@@ -131,7 +131,7 @@ module.exports = webpackMerge(config, {
               options:{
                 name:'[name].[hash:7].[ext]',
                 publicPath:'./images/',
-                outputPath:'static/images/'
+                outputPath:'images/'
               }
             }
           ]
