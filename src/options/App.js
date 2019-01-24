@@ -85,6 +85,17 @@ class App extends Component {
                     </Form.Item>
                     <Form.Item
                         {...formItemLayout}
+                        label="指派给作者"
+                        >
+                        {getFieldDecorator('assigned_author', {
+                            initialValue:state.assigned_author !== false ? true : false,
+                            valuePropName:'checked'
+                        })(
+                            <Switch />
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
                         label="自动跟踪"
                         >
                         {getFieldDecorator('tracks', {
