@@ -55,12 +55,22 @@ class App extends Component {
                     </Form.Item>
                     <Form.Item
                         {...formItemLayout}
+                        label="打开页面"
+                        >
+                        {getFieldDecorator('path', {
+                            initialValue:state.path || '/my/page'
+                        })(
+                            <Input autoComplete="off" placeholder="/my/page" />
+                        )}
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
                         label="用户名"
                         >
                         {getFieldDecorator('username', {
                             initialValue:state.username
                         })(
-                            <Input autoComplete="off" />
+                            <Input autoComplete="off" disabled />
                         )}
                     </Form.Item>
                     <Form.Item
@@ -70,17 +80,7 @@ class App extends Component {
                         {getFieldDecorator('password', {
                             initialValue:state.password
                         })(
-                            <Input autoComplete="off" />
-                        )}
-                    </Form.Item>
-                    <Form.Item
-                        {...formItemLayout}
-                        label="打开页面"
-                        >
-                        {getFieldDecorator('path', {
-                            initialValue:state.path || '/my/page'
-                        })(
-                            <Input autoComplete="off" />
+                            <Input autoComplete="off" disabled />
                         )}
                     </Form.Item>
                     <Form.Item
@@ -93,7 +93,21 @@ class App extends Component {
                         })(
                             <Switch />
                         )}
-                        <Popover placement="bottomRight" content="触发条件为状态设置为Started或Resolved" arrowPointAtCenter>
+                        <Popover placement="bottomRight" content="当状态设置为Started或Resolved，自动跟踪任务单" arrowPointAtCenter>
+                            <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
+                        </Popover>
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
+                        label="自动完成"
+                        >
+                        {getFieldDecorator('percent', {
+                            initialValue:state.percent !== false ? true : false,
+                            valuePropName:'checked'
+                        })(
+                            <Switch />
+                        )}
+                        <Popover placement="bottomRight" content="当状态设置Resolved后，完成选项自动设置为100%" arrowPointAtCenter>
                             <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
                         </Popover>
                     </Form.Item>

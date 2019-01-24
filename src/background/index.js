@@ -14,10 +14,13 @@ chrome.browserAction.onClicked.addListener(() => {
     let {url, path} = getSettings();
     if(url){
         url = url.replace(/\/$/, '');
-        path = path ? (path.indexOf('/') === -1 ? '/' + path : path) : '';
+        path = path ? (path.indexOf('/') === -1 ? '/' + path : path) : '/my/page';
         chrome.tabs.getAllInWindow(undefined, (tabs) => {
             for(let i = 0, tab; tab = tabs[i]; i++){
                 if(tab.url && tab.url.indexOf(url) === 0){
+                    chrome.tabs.update(tab.id, {
+                        selected:true
+                    });
                     chrome.tabs.reload(tab.id);
                     return;
                 }

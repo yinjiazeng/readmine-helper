@@ -53,7 +53,7 @@ events({
     },
     statusChange(e, $elem){
         const value = $elem.val();
-        if(value == 3){
+        if(value == 3 && settings.percent !== false){
             $('#issue_done_ratio').val(100);
         }
         let $off;
