@@ -1,23 +1,16 @@
 @import '~nuijs/assets/components/search/index.less';
 
+.search-hide-select {
+    display: none !important;
+}
+
 .search-wrap {
     position: relative;
     display: inline-block;
-    select {
-        width: 100% !important;
-        min-width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-    }
     input {
         padding: 0 16px 0 6px !important;
         margin: 0 !important;
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        bottom: 0 !important;
         width: 100% !important;
-        height: auto !important;
         max-width: 100% !important;
         min-width: 100% !important;
         box-sizing: border-box !important;
@@ -42,8 +35,8 @@
     margin: 0 !important;
     padding: 0 !important;
     .con-search-item {
-        height: 28px;
-        line-height: 28px;
+        height: 24px;
+        line-height: 24px;
         padding-left: 7px !important;
         &.s-hover {
             background-color: #fafafa;
@@ -52,6 +45,15 @@
         &.s-crt {
             background-color: #f0f9ff;
             color: inherit;
+        }
+        &.s-dis {
+            color: #ccc;
+        }
+        &.s-ind {
+            padding-left: 14px !important;
+        }
+        strong {
+            color: #000;
         }
     }
 }

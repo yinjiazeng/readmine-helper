@@ -18,38 +18,45 @@ chrome.extension.onMessage.addListener(request => {
     settings = request
 })
 
+//https://stackoverflow.com/questions/20381407/fire-onchange-event-on-page-from-google-chrome-extension
+const changeEvent = document.createEvent('HTMLEvents');
+changeEvent.initEvent('change', true, true);
+
 events({
     events:{
+        'keydown':'keydown',
         //鼠标悬停在select上时，初始化search
         'mouseover select':'search',
         //当按tab使select获得焦点时，初始化search
         'focus select':'search focus',
         //search组件中的input回车时取消默认行为（不设置会造成页面刷新）
-        'keydown .search-wrap input':'keydown',
+        'keydown .search-wrap input':'inputKeydown',
         //任务单页面切换“状态”
         'change #issue_status_id':'statusChange',
-        //任务单页面点击编辑（click无效）
-        'mousedown .contextual .icon-edit':'changeAssign'
-    },
-    //select可能包含onchange事件，在content_script中无法触发该事件回调的执行，因此需要设置回调模拟
-    //key:select的id属性
-    //value:回调函数
-    callbacks:{
-        //项目（页面右上角）
-        project_quick_jump_box(data){
-            if(data.value){
-                window.location = data.value;
-            }
+        //任务单页面点击编辑（用mousedown代替click，用click会慢于该按钮自生的点击事件）
+        'mousedown .contextual .icon-edit':'changeAssign',
+        'mousedown .toggle-multiselect':'multiselect',
+        //点击select右边的新增按钮
+        'click img[alt="Add"]':'addSearchInput',
+        'click #ajax-modal [type="submit"]':'destroySearch',
+        'click #ajax-modal [type="button"]':'removeSearchInput',
+        'click .search-wrap':(e, elem)=>{
+            elem.children('input').focus()
         },
-        //项目（任务单中）
-        issue_project_id(data){
-
+        'click .search-wrap input':(e)=>{
+            e.stopPropagation()
         }
     },
-    getCallback(id){
-        for(let i in this.callbacks){
-            if(i === id){
-                return this.callbacks[i]
+    multiselect(e, $elem){
+        const $select = $elem.siblings('select');
+        if($select.length){
+            const elem = $select[0];
+            const {searchObject} = elem;
+            if(searchObject){
+
+            }
+            else{
+                this.search({target:elem}, $select)
             }
         }
     },
@@ -58,18 +65,6 @@ events({
         if(settings.assigned_author !== false && $('#update').is(':hidden')){
             $('#issue_assigned_to_id').val($('.author > .user').attr('href').replace('/users/', ''))
         }
-    },
-    //检测select是否需要执行美化
-    checkEnabled(id){
-        //默认包含了选择人的下拉框
-        return [
-            'issue_assigned_', 
-            'values_assigned_', 
-            'values_author_', 
-            'values_watcher_',
-        ].find(v => id.indexOf(v) === 0) || 
-        //自定义
-        (settings.beautify || []).find(v => v === id)
     },
     //状态切换
     statusChange(e, $elem){
@@ -98,7 +93,27 @@ events({
             })
         }
     },
+    addSearchInput(e, $elem){
+        const $searchWrap = $elem.parent().prev();
+        if($searchWrap.hasClass('search-wrap')){
+            this.$searchInput = $searchWrap.children('input');
+        }
+    },
+    removeSearchInput(){
+        this.$searchInput = null
+    },
+    destroySearch(){
+        if(this.$searchInput){
+            this.$searchInput.search('destroy');
+            this.removeSearchInput()
+        }
+    },
     keydown(e){
+        if(e.keyCode === 27){
+            this.removeSearchInput()
+        }
+    },
+    inputKeydown(e){
         if(e.keyCode === 13){
             e.preventDefault()
         }
@@ -108,26 +123,45 @@ events({
     },
     //初始化search
     search(e, $elem){
-        const id = $elem.attr('id');
-        if(!e.target.bind_search && this.checkEnabled(id)){
-            e.target.bind_search = true;
-            const callback = this.getCallback(id);
-            const data = this.getData($elem);
-            const defaultData = data.find(v => {
-                return v.selected
-            }) || data[0] || {
-                name:''
+        const target = e.target;
+        if(!target.bind_search){
+            target.bind_search = true;
+            let data = this.getData($elem);
+            let selectedIndex = 0;
+            let defaultData = data.find((v, i) => {
+                if(v.selected){
+                    selectedIndex = i;
+                    return true
+                }
+                return false
+            })
+            if(!defaultData){
+                data = data.map(v => {
+                    v.index++
+                    return v
+                })
+                data.unshift({
+                    index:0,
+                    name:'',
+                    value:'',
+                    pinyin:[],
+                    selected:true,
+                    disabled:false
+                })
+                defaultData = data[0]
             }
             const $input = $(`<input type="text" value="${defaultData.name}" autocomplete="off">`);
-            const style = this.getStyle(e.target);
-            const $wrap = $elem.attr('tabindex', '-1').wrap('<span class="search-wrap"></span>').parent().css(style);
+            const style = this.getStyle(target);
+            const {height} = style;
+            delete style.height;
+            const $wrap = $('<span class="search-wrap"></span>').append($input.height(height)).css(style).insertAfter($elem.attr('tabindex', '-1').addClass('search-hide-select'))
             $input.appendTo($wrap).focus(()=>{
-                $input.search({
+                $input.select().search({
                     nullable:true,
                     cache:true,
                     limit:10,
                     item:
-                        `<li class="con-search-item<%selected($data)%>" data-index="<%$index%>">
+                        `<li class="con-search-item<%selected($data)%><%$data.disabled ? ' s-dis' : ''%><%$data.indent ? ' s-ind' : ''%>" data-index="<%$index%>">
                             <%if $data.label%>
                             <strong><%$data.label%></strong>
                             <%else%>
@@ -161,21 +195,35 @@ events({
                     data:() => {
                         return data
                     },
+                    onInit(self){
+                        target.searchObject = self;
+                    },
                     onShow(self){
                         //解决首次打开无法搜索bug
                         self._focus = true
                     },
-                    onSelectBefore(self, data){
+                    onSelectBefore(self, res){
                         //label和禁用行不能选择
-                        if(data.label || data.disabled){
+                        if(res.label || res.disabled){
                             return false
                         }
                     },
-                    onSelect(self, data){
-                        self.value(data.name)
-                        $elem.val(data.value)
-                        if(callback){
-                            callback(data)
+                    onSelect(self, res){
+                        data[selectedIndex].selected = false;
+                        data[selectedIndex = res.index].selected = true;
+                        self.value(res.name)
+                        $elem.val(res.value)
+                        target.dispatchEvent(changeEvent)
+                    },
+                    onDestroy(){
+                        target.bind_search = false
+                        $input.unwrap();
+                        $input.remove();
+                    },
+                    onBlur(self){
+                        const name = data[selectedIndex].name;
+                        if(self.val !== name){
+                            self.value(name)
                         }
                     }
                 }).search('show')
@@ -185,7 +233,7 @@ events({
     },
     getStyle(elem){
         const style = document.defaultView.getComputedStyle(elem, null);
-        const names = ['maxWidth', 'minWidth', 'width', 'margin'];
+        const names = ['maxWidth', 'minWidth', 'width', 'height', 'margin'];
         const data = {}
         names.forEach(name => {
             const value = style[name];
@@ -196,12 +244,14 @@ events({
         })
         return data
     },
-    getData($elem, options = []){
+    getData($elem, options = [], indent){
         $elem.children().each((i, item) => {
             const $item = $(item);
             if(item.tagName === 'OPTION'){
-                const text = $item.text();
+                const text = $item.text().trim();
                 options.push({
+                    indent,
+                    index:options.length,
                     value:item.value,
                     name:text,
                     pinyin:pinyin(text.replace(/\s+/g, '')) || [],
@@ -211,9 +261,10 @@ events({
             }
             else if(item.tagName === 'OPTGROUP'){
                 options.push({
+                    index:options.length,
                     label:$item.attr('label')
                 })
-                this.getData($item, options)
+                this.getData($item, options, true)
             }
         })
         return options

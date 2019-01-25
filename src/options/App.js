@@ -70,7 +70,7 @@ class App extends Component {
                         {getFieldDecorator('username', {
                             initialValue:state.username
                         })(
-                            <Input autoComplete="off" disabled />
+                            <Input autoComplete="off" />
                         )}
                     </Form.Item>
                     <Form.Item
@@ -80,7 +80,7 @@ class App extends Component {
                         {getFieldDecorator('password', {
                             initialValue:state.password
                         })(
-                            <Input autoComplete="off" disabled />
+                            <Input.Password />
                         )}
                     </Form.Item>
                     <Form.Item

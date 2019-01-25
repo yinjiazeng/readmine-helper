@@ -19,6 +19,6 @@
     "js": ["script/jquery.js", "script/content.js"],
     "css": ["style/content.css"]
   }],
-  "permissions": [ "tabs"],
+  "permissions": ["tabs"],
   "manifest_version": 2
 }

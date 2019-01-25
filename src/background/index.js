@@ -1,3 +1,5 @@
+// import request from '../utils/request';
+
 //获取设置信息
 const getSettings = () => {
     return JSON.parse(localStorage.getItem('settings') || '{}')
@@ -35,3 +37,17 @@ chrome.browserAction.onClicked.addListener(() => {
         })
     }
 })
+
+
+// request('issues', {
+//     body:{
+//         assigned_to_id:70,
+//         limit:50
+//     }
+// }).then(data => {
+    
+// }).catch(err => {
+//     if(err){
+
+//     }
+// })
