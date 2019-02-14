@@ -59,7 +59,7 @@ Events({
         e.stopPropagation()
     },
     getInput(e, $elem){
-        return elem.children('input')
+        return $elem.children('input')
     },
     multiselect(e, $elem){
         const $wrap = $elem.prev('.search-wrap');
