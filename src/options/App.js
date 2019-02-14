@@ -12,7 +12,7 @@ const formItemLayout = {
 
 message.config({
     top: 100,
-    duration: 2,
+    duration: 1,
     maxCount: 1,
 });
 
@@ -92,6 +92,9 @@ class App extends Component {
                         })(
                             <Switch />
                         )}
+                        <Popover placement="bottomRight" content="编辑任务单时，默认指派给作者" arrowPointAtCenter>
+                            <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
+                        </Popover>
                     </Form.Item>
                     <Form.Item
                         {...formItemLayout}
@@ -103,7 +106,7 @@ class App extends Component {
                         })(
                             <Switch />
                         )}
-                        <Popover placement="bottomRight" content="当状态设置为Started或Resolved，自动跟踪任务单" arrowPointAtCenter>
+                        <Popover placement="bottomRight" content="当任务状态设置为Started或Resolved，自动跟踪任务单" arrowPointAtCenter>
                             <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
                         </Popover>
                     </Form.Item>
@@ -117,7 +120,7 @@ class App extends Component {
                         })(
                             <Switch />
                         )}
-                        <Popover placement="bottomRight" content="当状态设置Resolved后，完成选项自动设置为100%" arrowPointAtCenter>
+                        <Popover placement="bottomRight" content="当任务状态设置Resolved后，完成选项自动设置为100%" arrowPointAtCenter>
                             <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
                         </Popover>
                     </Form.Item>

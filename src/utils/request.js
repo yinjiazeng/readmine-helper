@@ -32,7 +32,7 @@ export default function(id, options = {}){
 
             const headers = {
                 'Content-Type':`application/x-www-form-urlencoded;charset=UTF-8`,
-                'Authorization':`Basic ${Base64.encode(username + ':1' + password)}`
+                'Authorization':`Basic ${Base64.encode(username + ':' + password)}`
             }
             
             const isGet = method.toLowerCase() === 'get';

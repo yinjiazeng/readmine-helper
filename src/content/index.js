@@ -1,15 +1,12 @@
 import './style.less';
 import 'nuijs/components/search';
-import {events} from 'nuijs/core';
+import {events as Events} from 'nuijs/core';
 import pinyin from './pinyin';
-
-//ajax请求时必传token
-const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 let settings = {};
 
 //初始化设置信息
-chrome.extension.sendMessage('init', (response) => {
+chrome.extension.sendMessage('settings_init', response => {
     settings = response
 })
 
@@ -22,30 +19,47 @@ chrome.extension.onMessage.addListener(request => {
 const changeEvent = document.createEvent('HTMLEvents');
 changeEvent.initEvent('change', true, true);
 
-events({
-    events:{
-        'keydown':'keydown',
-        //鼠标悬停在select上时，初始化search
-        'mouseover select':'search',
-        //当按tab使select获得焦点时，初始化search
-        'focus select':'search focus',
-        //search组件中的input回车时取消默认行为（不设置会造成页面刷新）
-        'keydown .search-wrap input':'inputKeydown',
-        //任务单页面切换“状态”
-        'change #issue_status_id':'statusChange',
-        //任务单页面点击编辑（用mousedown代替click，用click会慢于自身的点击事件）
-        'mousedown .contextual .icon-edit':'changeAssign',
-        'mousedown .toggle-multiselect':'multiselect',
-        //点击select右边的新增按钮
-        'click img[alt="Add"]':'addSearchInput',
-        'click #ajax-modal [type="submit"]':'destroySearch',
-        'click #ajax-modal [type="button"]':'removeSearchInput',
-        'click .search-wrap':(e, elem)=>{
-            elem.children('input').focus()
-        },
-        'click .search-wrap input':(e)=>{
-            e.stopPropagation()
+const events = {
+    'keydown':'keydown',
+    //鼠标悬停在select上时，初始化search
+    'mouseover select':'search',
+    //当按tab使select获得焦点时，初始化search
+    'focus select':'search focus',
+    //search组件中的input回车时取消默认行为（不设置会造成页面刷新）
+    'keydown .search-wrap input':'inputKeydown',
+    //任务单页面切换“状态”
+    'change #issue_status_id':'statusChange',
+    //任务单页面点击编辑（用mousedown代替click，用click会慢于自身的点击事件）
+    'mousedown .contextual .icon-edit':'changeAssign',
+    'mousedown .toggle-multiselect':'multiselect',
+    //点击select右边的新增按钮
+    'click img[alt="Add"]':'addSearchInput',
+    'click #ajax-modal [type="submit"]':'destroySearch',
+    'click #ajax-modal [type="button"]':'removeSearchInput',
+    'click .search-wrap':'getInput focus',
+    'click .search-wrap input':'stopPropagation'
+}
+
+for(let i in events){
+    events[i] = 'checkUrl ' + events[i]
+}
+
+Events({
+    events,
+    checkUrl(){
+        if(
+            (settings.url && location.href.indexOf(settings.url) === 0) || 
+            ['192.168.200.55:90', 'kf.zjaisino.com:90'].includes(location.host)
+        ){
+            return true
         }
+        return false
+    },
+    stopPropagation(e){
+        e.stopPropagation()
+    },
+    getInput(e, $elem){
+        return elem.children('input')
     },
     multiselect(e, $elem){
         const $wrap = $elem.prev('.search-wrap');
@@ -55,7 +69,7 @@ events({
             $elem.prev('select').removeClass('hide-select')[0].bind_search = false;
         }
     },
-    //将“指派给”设置为任务单创作者
+    //将“指派给”设置为任务单作者
     changeAssign(){
         if(settings.assigned_author !== false && $('#update').is(':hidden')){
             $('#issue_assigned_to_id').val($('.author > .user').attr('href').replace('/users/', ''))
@@ -83,7 +97,8 @@ events({
                 type:'post',
                 url:$off.attr('href'),
                 headers:{
-                    'X-CSRF-Token':csrfToken
+                    //ajax请求时必传token
+                    'X-CSRF-Token':$('meta[name="csrf-token"]').attr('content')
                 }
             })
         }
