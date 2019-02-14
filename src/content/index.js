@@ -33,7 +33,7 @@ events({
         'keydown .search-wrap input':'inputKeydown',
         //任务单页面切换“状态”
         'change #issue_status_id':'statusChange',
-        //任务单页面点击编辑（用mousedown代替click，用click会慢于该按钮自生的点击事件）
+        //任务单页面点击编辑（用mousedown代替click，用click会慢于自身的点击事件）
         'mousedown .contextual .icon-edit':'changeAssign',
         'mousedown .toggle-multiselect':'multiselect',
         //点击select右边的新增按钮
@@ -48,16 +48,11 @@ events({
         }
     },
     multiselect(e, $elem){
-        const $select = $elem.siblings('select');
-        if($select.length){
-            const elem = $select[0];
-            const {searchObject} = elem;
-            if(searchObject){
-
-            }
-            else{
-                this.search({target:elem}, $select)
-            }
+        const $wrap = $elem.prev('.search-wrap');
+        if($wrap.length){
+            $wrap.children('input').search('destroy')
+            $wrap.remove();
+            $elem.prev('select').removeClass('hide-select')[0].bind_search = false;
         }
     },
     //将“指派给”设置为任务单创作者
@@ -122,9 +117,9 @@ events({
         $input && $input.focus()
     },
     //初始化search
-    search(e, $elem){
+    search(e, $elem, option){
         const target = e.target;
-        if(!target.bind_search){
+        if(!target.bind_search && !$elem.attr('multiple')){
             target.bind_search = true;
             let data = this.getData($elem);
             let selectedIndex = 0;
@@ -154,7 +149,7 @@ events({
             const style = this.getStyle(target);
             const {height} = style;
             delete style.height;
-            const $wrap = $('<span class="search-wrap"></span>').append($input.height(height)).css(style).insertAfter($elem.attr('tabindex', '-1').addClass('search-hide-select'))
+            const $wrap = $('<span class="search-wrap"></span>').append($input.height(height)).css(style).insertAfter($elem.attr('tabindex', '-1').addClass('hide-select'))
             $input.appendTo($wrap).focus(()=>{
                 $input.select().search({
                     nullable:true,
@@ -225,7 +220,8 @@ events({
                         if(self.val !== name){
                             self.value(name)
                         }
-                    }
+                    },
+                    ...option,
                 }).search('show')
             })
             return $input

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Input, Form, Checkbox, Switch, Button, message, Popover, Icon} from 'antd';
-import data from './data';
 
 const formItemLayout = {
     labelCol: {
@@ -121,22 +120,6 @@ class App extends Component {
                         <Popover placement="bottomRight" content="当状态设置Resolved后，完成选项自动设置为100%" arrowPointAtCenter>
                             <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
                         </Popover>
-                    </Form.Item>
-                    <Form.Item
-                        {...formItemLayout}
-                        label="美化选择框"
-                        >
-                        {getFieldDecorator('beautify', {
-                            initialValue:state.beautify || []
-                        })(
-                            <Checkbox.Group style={{ width:"100%"}}>
-                                {
-                                    data.map(v => {
-                                        return <Checkbox key={v.id} value={v.id} style={{display:'block', marginLeft:8, marginBottom:4}}>{v.name}</Checkbox>
-                                    })
-                                }
-                            </Checkbox.Group>
-                        )}
                     </Form.Item>
                     <Form.Item
                         {...formItemLayout}

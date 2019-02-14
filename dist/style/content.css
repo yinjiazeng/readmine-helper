@@ -62,7 +62,7 @@
 .nui-search .con-search-item.s-crt {
     background-color: #3F91F1;
     color: #fff;
-}.search-hide-select {
+}.hide-select {
   display: none !important;
 }
 .search-wrap {
@@ -76,6 +76,7 @@
   max-width: 100% !important;
   min-width: 100% !important;
   box-sizing: border-box !important;
+  min-height: 23px !important;
 }
 .search-wrap:after {
   position: absolute;
