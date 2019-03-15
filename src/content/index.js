@@ -5,29 +5,42 @@ import pinyin from './pinyin';
 
 let settings = {};
 
-const setCommentsRequired = (settings) => {
-    const new_time_entry = document.getElementById('new_time_entry');
-    if(new_time_entry){
-        const {time_entry_comments} = new_time_entry;
-        if(time_entry_comments){
-            if(settings.workingNote !== false){
-                time_entry_comments.setAttribute('required', true)
-            }
-            else{
-                time_entry_comments.removeAttribute('required')
-            }
+const commentsRequired = (form, required = true) => {
+    const {time_entry_comments} = form;
+    if(time_entry_comments){
+        if(settings.workingNote !== false && required){
+            time_entry_comments.setAttribute('required', true)
         }
+        else{
+            time_entry_comments.removeAttribute('required')
+        }
+    }
+}
+
+//设置工时统计注释是否必填
+const setCommentsRequired = () => {
+    const new_time_entry = document.getElementById('new_time_entry');
+    const issue_form = document.getElementById('issue-form');
+    //工时统计页面
+    if(new_time_entry){
+        commentsRequired(new_time_entry)
+    }
+    //任务单编辑页面，工时填入时，才会检测是否必填
+    else if(issue_form && issue_form.time_entry_hours){
+        commentsRequired(issue_form, !!issue_form.time_entry_hours.value.trim())
     }
 }
 
 //初始化设置信息
 chrome.extension.sendMessage('settings_init', response => {
-    setCommentsRequired(settings = response)
+    settings = response
+    setCommentsRequired()
 })
 
 //和background通信，更新设置信息
 chrome.extension.onMessage.addListener(request => {
-    setCommentsRequired(settings = request)
+    settings = request
+    setCommentsRequired()
 })
 
 //https://stackoverflow.com/questions/20381407/fire-onchange-event-on-page-from-google-chrome-extension
@@ -42,6 +55,7 @@ const events = {
     'focus select':'search focus',
     //search组件中的input回车时取消默认行为（不设置会造成页面刷新）
     'keydown .search-wrap input':'inputKeydown',
+    'change #issue-form #time_entry_hours':'commentsRequired',
     //任务单页面切换“状态”
     'change #issue_status_id':'statusChange',
     //任务单页面点击编辑（用mousedown代替click，用click会慢于自身的点击事件）
@@ -118,6 +132,9 @@ Events({
             })
         }
     },
+    commentsRequired(e, $elem){
+        commentsRequired(e.target.form, !!$elem.val().trim())
+    },
     addSearchInput(e, $elem){
         const $searchWrap = $elem.parent().prev();
         if($searchWrap.hasClass('search-wrap')){
@@ -149,6 +166,10 @@ Events({
     //初始化search
     search(e, $elem, option){
         const target = e.target;
+        //排除日期选择器中的下拉框
+        if($elem.parent().hasClass('ui-datepicker-title')){
+            return false
+        }
         if(!target.bind_search && !$elem.attr('multiple')){
             target.bind_search = true;
             let data = this.getData($elem);
