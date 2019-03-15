@@ -5,14 +5,29 @@ import pinyin from './pinyin';
 
 let settings = {};
 
+const setCommentsRequired = (settings) => {
+    const new_time_entry = document.getElementById('new_time_entry');
+    if(new_time_entry){
+        const {time_entry_comments} = new_time_entry;
+        if(time_entry_comments){
+            if(settings.workingNote !== false){
+                time_entry_comments.setAttribute('required', true)
+            }
+            else{
+                time_entry_comments.removeAttribute('required')
+            }
+        }
+    }
+}
+
 //初始化设置信息
 chrome.extension.sendMessage('settings_init', response => {
-    settings = response
+    setCommentsRequired(settings = response)
 })
 
 //和background通信，更新设置信息
 chrome.extension.onMessage.addListener(request => {
-    settings = request
+    setCommentsRequired(settings = request)
 })
 
 //https://stackoverflow.com/questions/20381407/fire-onchange-event-on-page-from-google-chrome-extension

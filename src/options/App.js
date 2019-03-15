@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Input, Form, Checkbox, Switch, Button, message, Popover, Icon} from 'antd';
+import {Input, Form, Switch, Button, message, Popover, Icon} from 'antd';
 
 const formItemLayout = {
     labelCol: {
@@ -121,6 +121,20 @@ class App extends Component {
                             <Switch />
                         )}
                         <Popover placement="bottomRight" content="当任务状态设置Resolved后，完成选项自动设置为100%" arrowPointAtCenter>
+                            <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
+                        </Popover>
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
+                        label="工时注释"
+                        >
+                        {getFieldDecorator('workingNote', {
+                            initialValue:state.workingNote !== false ? true : false,
+                            valuePropName:'checked'
+                        })(
+                            <Switch />
+                        )}
+                        <Popover placement="bottomRight" content="开启后，工时注释将为必填项" arrowPointAtCenter>
                             <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
                         </Popover>
                     </Form.Item>
