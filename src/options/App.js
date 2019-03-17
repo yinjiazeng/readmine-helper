@@ -120,7 +120,21 @@ class App extends Component {
                         })(
                             <Switch />
                         )}
-                        <Popover placement="bottomRight" content="当任务状态设置Resolved后，完成选项自动设置为100%" arrowPointAtCenter>
+                        <Popover placement="bottomRight" content="当任务状态设置Resolved后，完成状态自动设置为100%" arrowPointAtCenter>
+                            <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
+                        </Popover>
+                    </Form.Item>
+                    <Form.Item
+                        {...formItemLayout}
+                        label="工时提醒"
+                        >
+                        {getFieldDecorator('workingTime', {
+                            initialValue:state.workingTime !== false ? true : false,
+                            valuePropName:'checked'
+                        })(
+                            <Switch />
+                        )}
+                        <Popover placement="bottomRight" content="当任务状态设置Resolved或Closed，提交时提醒是否需要录入工时" arrowPointAtCenter>
                             <Icon type="question-circle" style={{verticalAlign:'middle', marginLeft:6}} />
                         </Popover>
                     </Form.Item>

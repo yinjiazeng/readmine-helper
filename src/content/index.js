@@ -19,15 +19,18 @@ const commentsRequired = (form, required = true) => {
 
 //设置工时统计注释是否必填
 const setCommentsRequired = () => {
-    const new_time_entry = document.getElementById('new_time_entry');
-    const issue_form = document.getElementById('issue-form');
+    let form;
     //工时统计页面
-    if(new_time_entry){
-        commentsRequired(new_time_entry)
+    if(form = document.getElementById('new_time_entry')){
+        commentsRequired(form)
+    }
+    //工时编辑页面
+    else if(form = document.querySelector('.edit_time_entry')){
+        commentsRequired(form)
     }
     //任务单编辑页面，工时填入时，才会检测是否必填
-    else if(issue_form && issue_form.time_entry_hours){
-        commentsRequired(issue_form, !!issue_form.time_entry_hours.value.trim())
+    else if((form = document.getElementById('issue-form')) && form.time_entry_hours){
+        commentsRequired(form, !!form.time_entry_hours.value.trim())
     }
 }
 
