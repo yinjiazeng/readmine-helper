@@ -2,6 +2,7 @@ import './style.less';
 import 'nuijs/components/search';
 import {events as Events} from 'nuijs/core';
 import pinyin from './pinyin';
+import generateChart from './generateChart';
 
 let settings = {};
 
@@ -69,7 +70,7 @@ const events = {
     'click #ajax-modal [type="submit"]':'destroySearch',
     'click #ajax-modal [type="button"]':'removeSearchInput',
     'click .search-wrap':'getInput focus',
-    'click .search-wrap input':'stopPropagation'
+    'click .search-wrap input': 'stopPropagation'
 }
 
 for(let i in events){
@@ -78,6 +79,12 @@ for(let i in events){
 
 Events({
     events,
+    init() { 
+        generateChart.call(this);
+    },
+    getSettings() { 
+        return settings;
+    },
     checkUrl(){
         if(
             (settings.url && location.href.indexOf(settings.url) === 0) || 
@@ -319,4 +326,4 @@ Events({
         })
         return options
     }
-})
+}).init()

@@ -6,13 +6,14 @@ import qs from 'qs';
 import service from './service';
 import {Base64} from 'js-base64';
 
-export default function(id, options = {}){
+export default function(id, options = {}, settings) {
     return new Promise((resolve, reject) => {
-        let {url, username, password} = JSON.parse(localStorage.getItem('settings') || '{}');
-        if(url && username && password){
-            const rule = service[id];
+        let {url, username, password} = settings || JSON.parse(localStorage.getItem('settings') || '{}');
+        if (username && password) {
+            
+            const rule = /\.json$/.test(id) ? id : service[id];
 
-            if(!/\/$/.test(url)){
+            if(url && !/\/$/.test(url)){
                 url += '/'
             }
 
@@ -45,7 +46,9 @@ export default function(id, options = {}){
 
             options.headers = {...options.headers, ...headers}
 
-            _url = url + _url;
+            if (url && !/^(https?:)?\/?\//.test(_url)) { 
+                _url = url + _url;
+            }
 
             //no cache
             _url += '?_=' + new Date().getTime()

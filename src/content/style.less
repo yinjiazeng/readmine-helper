@@ -1,4 +1,20 @@
 @import '~nuijs/assets/components/search/index.less';
+@import '~nuijs/assets/components/layer/index.less';
+@import '~nuijs/assets/elements/button/index.less';
+
+.f-oh {
+    overflow: hidden;
+}
+
+.ui-button {
+    outline: none;
+}
+
+.layer-foot {
+    .ui-button {
+        min-width: 60px;
+    }
+}
 
 .hide-select {
     display: none !important;
@@ -62,4 +78,13 @@
 .con-search-empty {
     padding-left: 6px;
     line-height: 28px;
+}
+
+.j-generate-chart {
+    padding-left: 18px !important;
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAABlklEQVQ4T73SS0sbYRQG4Pd8mZoooqWING5cCrEUXEhpSyZTSnUhgpdmnOCmqJNR/Amll42b/oGSi82iXuYzILhzpzMJdiGCIIgbizt3gou2qJPvyFAIBFyYLnrW54H3XAj/WNSMs4r6gDvrH4LA94JjJeNhNFDLBBpGQE/chd2zBviuZMT+BGoVwBuApBL4pnGtU3GkROBzEVFv12aqP8OUdZjJGV1KqG1idJDAEitMMNEIMRMTvqhrsYToVUt57sdFHY5/fdHdEtH2iVD9LWrzWiDaN53KebpkPAbXHpVnKsdTBf09AQnX9qfrMJwhdsOjbtb7bhZTo4Lx0bW9QWv5ZY8KtL4Nx9uxCvpnBiWk7Zl1mN543ioutSFpV7bMvG4S8Elm/X6roC+CkXazvnEnzOSTKUXClbYXbwqaudQrEiyl7Xf/J1jUdWKSf6MmJwkUzvjUyifnQZR2bf+1VUh9YEZCZr1Mw3JwGUmU7erB9Mqzjutf0d6y4x+FtwXQte7snkzkkvEHqLVJZ++04QGa+dmw9xZbOs4PCB+hYQAAAABJRU5ErkJggg==) no-repeat left center;
+    &.loading {
+        background-image: url('/images/loading.gif');
+        background-size: 14px;
+    }
 }

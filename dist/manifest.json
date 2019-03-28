@@ -1,7 +1,7 @@
 {
   "name": "readmine助手",
   "description" : "readmine助手可以帮助您改善readmine的使用体验。比如将默认的下拉框改为可以搜索、设置完任务单状态后自动跟踪该任务等。",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "options_page": "options.html",
   "browser_action": {
     "default_icon": "images/icon.png"
@@ -16,7 +16,7 @@
   },
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
-    "js": ["script/jquery.js", "script/content.js"],
+    "js": ["script/jquery.js", "script/content.js", "script/echarts.js"],
     "css": ["style/content.css"]
   }],
   "permissions": ["tabs"],

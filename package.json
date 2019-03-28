@@ -1,10 +1,9 @@
 {
   "name": "readmine-helper",
-  "version": "1.0.0",
+  "version": "1.1.8",
   "description": "readmine助手",
   "scripts": {
-    "start": "cross-env NODE_ENV=dev webpack-dev-server --progress",
-    "watch": "cross-env NODE_ENV=dev webpack --watch --progress",
+    "start": "cross-env NODE_ENV=dev webpack --watch --progress",
     "build": "cross-env NODE_ENV=production webpack --progress"
   },
   "dependencies": {
@@ -12,7 +11,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",
     "js-base64": "^2.5.0",
-    "nuijs": "^0.4.3",
+    "nuijs": "^0.4.4",
     "qs": "^6.6.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
