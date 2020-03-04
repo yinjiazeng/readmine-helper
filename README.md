@@ -8,7 +8,7 @@
 * 访问 [chrome应用商店](https://chrome.google.com/webstore/detail/readmine%E5%8A%A9%E6%89%8B/ffokmabnhjciionpalncjcepkbelkglm) 在线安装（需翻墙）
 * 下载 [crx拓展文件](https://github.com/yinjiazeng/readmine-helper/releases) 手动安装
 
-首次使用需要在设置页面（右键图标点击选择）配置您的readmine网站地址。
+首次使用需要在设置页面（右键图标点击选项）配置您的readmine网站地址。
 
 ## 许可证
 MIT
