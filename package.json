@@ -14,7 +14,7 @@
     "babel-polyfill": "^6.26.0",
     "js-base64": "^2.5.0",
     "nuijs": "^0.4.4",
-    "qs": "^6.6.0",
+    "qs": "^6.6.1",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-router-dom": "^4.3.1"
